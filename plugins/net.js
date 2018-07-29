@@ -7,7 +7,7 @@ var toPull = require('stream-to-pull-stream')
 
 function toDuplex (str) {
   var stream = toPull.duplex(str)
-  stream.address = 'net:'+str.remoteAddress+':'+str.remotePort
+  stream.address = 'net:' + str.remoteAddress + ':' + str.remotePort
   return stream
 }
 
@@ -25,18 +25,19 @@ module.exports = function (opts) {
       }
     },
     client: function (opts, cb) {
-      var addr = 'net:'+opts.host+':'+opts.port
+      var addr = 'net:' + opts.host + ':' + opts.port
       var started = false
+
       if (opts.host.includes(':')) opts.host += '%eth0'
       var stream = net.connect(opts)
         .on('connect', function () {
-          if(started) return
+          if (started) return
           started = true
 
           cb(null, toDuplex(stream))
         })
         .on('error', function (err) {
-          if(started) return
+          if (started) return
           started = true
           cb(err)
         })
@@ -47,14 +48,14 @@ module.exports = function (opts) {
         cb(new Error('multiserver.net: aborted'))
       }
     },
-    //MUST be net:<host>:<port>
+    // MUST be net:<host>:<port>
     parse: function (s) {
-      if(!net) return null
+      if (!net) return null
       var ary = s.split(':')
-      if(ary.length < 3) return null
-      if('net' !== ary.shift()) return null
+      if (ary.length < 3) return null
+      if (ary.shift() !== 'net') return null
       var port = +ary.pop()
-      if(isNaN(port)) return null
+      if (isNaN(port)) return null
       return {
         name: 'net',
         host: ary.join(':') || 'localhost',
@@ -66,4 +67,3 @@ module.exports = function (opts) {
     }
   }
 }
-
