@@ -28,7 +28,7 @@ module.exports = function (opts) {
       var addr = 'net:' + opts.host + ':' + opts.port
       var started = false
 
-      if (opts.host.includes(':')) opts.host += '%eth0'
+      if (opts.iface) opts.host += `%${iface}`
       var stream = net.connect(opts)
         .on('connect', function () {
           if (started) return
