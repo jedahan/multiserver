@@ -25,6 +25,7 @@ module.exports = function (opts) {
       }
     },
     client: function (opts, cb) {
+      if (opts.iface) opts.host += `%${iface}`
       var addr = 'net:'+opts.host+':'+opts.port
       var started = false
       var stream = net.connect(opts)
